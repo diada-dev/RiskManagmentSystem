@@ -8,19 +8,26 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import servlets.PayFormServlet;
 //import servlets.CaptchaServlet;
 import servlets.VerifyServlet;
+import servlets.CAPTCHAText;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
+        //******************************************************************************
         PayFormServlet requestServlet = new PayFormServlet();
         context.addServlet(new ServletHolder(requestServlet), "/payform");
+
         //CaptchaServlet requestCaptchaServlet = new CaptchaServlet();
         //context.addServlet(new ServletHolder(requestCaptchaServlet), "/captcha");
-        VerifyServlet requestCaptchaServlet = new VerifyServlet();
-        context.addServlet(new ServletHolder(requestCaptchaServlet), "/verify");
 
+        VerifyServlet requestVerifyServlet = new VerifyServlet();
+        context.addServlet(new ServletHolder(requestVerifyServlet), "/verify");
+
+        CAPTCHAText requestCaptchaServlet = new CAPTCHAText();
+        context.addServlet(new ServletHolder(requestCaptchaServlet), "/text-c");
+        //******************************************************************************
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");
 
