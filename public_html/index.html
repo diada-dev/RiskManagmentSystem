@@ -1,0 +1,181 @@
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Валидация оплаты</title>  
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+</head>
+<body>
+
+
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h4 class="modal-title" id="myModalLabel">Оплата</h4>
+      </div>
+      <div class="modal-body">
+  	    <form id="myForm" method="post" role="form" name="myForm">
+<!--required="required"-->
+	      <div class="form-group has-feedback">
+	        <label for="INN" class="control-label">ИНН организации:</label>
+            <div class="input-group">
+	          <span class="input-group-addon"><i class="glyphicon glyphicon-briefcase"></i></span>         
+	          <input id="inn" type="text" class="form-control"  name="inn" disabled value="">
+	        </div>
+	      	<span class="glyphicon form-control-feedback"></span>
+	      </div> 
+
+	      <div class="form-group has-feedback">
+	        <label for="card" class="control-label">Введите номер карты:</label>
+            <div class="input-group">
+	          <span class="input-group-addon"><i class="glyphicon glyphicon-credit-card"></i></span>         
+	          <input type="text" class="form-control" name="card" value="">
+	        </div>
+	        <span class="glyphicon form-control-feedback"></span>
+	      </div>
+
+	      <div class="form-group has-feedback">
+	        <label for="paid" class="control-label">Введите сумму:</label>
+            <div class="input-group">
+	          <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+	          <input type="text" class="form-control" name="paid" value="">
+	        </div>
+	        <span class="glyphicon form-control-feedback"></span>
+	      </div>
+	      <hr>	
+
+	      <!--<img id="img-captcha" src="/captcha"> -->
+			<div id="txtfile"></div>
+
+	      <div id="reload-captcha" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i> Обновить</div>
+	      <div class="form-group has-feedback">
+            <label id="label-captcha" for="captcha" class="control-label">Пожалуйста, введите указанный на изображении код:</label>
+		    <input id="text-captcha" name="captcha" type="text" class="form-control" value="">
+		    <span class="glyphicon form-control-feedback"></span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button id="save" type="button" class="btn btn-primary">Оплата</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="alert alert-success hidden" id="success-alert">
+    <h2>Успех</h2>
+    <div>Ваши деньги были успешно отправлены.</div>
+  </div>
+
+
+<p>
+  <button id="btn-modal" type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#myModal" onClick="isOn(105356343345)">
+    Оплата квитанции ЖКХ
+  </button>
+</p>
+
+<p>
+  <button id="btn-modal" type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#myModal" onClick="isOn(77543549323)">
+    Оплата ООО &quotРога и Копыта&quot;
+  </button>
+</p>
+
+<p>
+  <button id="btn-modal" type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#myModal" onClick="isOn(32394534577)">
+    Оплата ООО &quot;Рога_не_Копыта&quot;
+  </button>
+</p>
+
+<p>
+  <button id="btn-modal" type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#myModal" onClick="isOn(7743787817)">
+    Оплата АО &quot;Трест &quot;Который лопнул&quot;
+  </button>
+</p>
+
+
+
+</div>
+
+<script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+
+function isOn(x) {document.getElementById('inn').value = x;};
+
+//для тестирования обхода приложения
+$(document).ready(function(){
+  $('#txtfile').load('/text-c');
+});
+
+$(function() {
+$('#myModal').on('show.bs.modal', function () {
+  $('#img-captcha').attr('src', 'captcha.php?id='+Math.random()+'');
+});
+$("#reload-captcha").click(function() {
+  $('#img-captcha').attr('src', 'captcha.php?id='+Math.random()+'');
+});  
+
+
+$('#save').click(function() {
+  var formValid = true;
+  $('input').each(function() {
+    if  ($(this).attr('id') == 'text-captcha') { return true; }
+    var formGroup = $(this).parents('.form-group');
+    var glyphicon = formGroup.find('.form-control-feedback');
+    if (this.checkValidity()) {
+      formGroup.addClass('has-success').removeClass('has-error');
+      glyphicon.addClass('glyphicon-ok').removeClass('glyphicon-remove');
+    } else {
+      formGroup.addClass('has-error').removeClass('has-success');
+      glyphicon.addClass('glyphicon-remove').removeClass('glyphicon-ok');
+      formValid = false;  
+    }
+  });
+  var captcha = $("#text-captcha").val();
+  if (captcha=='') {
+    inputCaptcha = $("#text-captcha");
+    formGroupCaptcha = inputCaptcha.parents('.form-group');
+    glyphiconCaptcha = formGroupCaptcha.find('.form-control-feedback');
+    formGroupCaptcha.addClass('has-error').removeClass('has-success');
+    glyphiconCaptcha.addClass('glyphicon-remove').removeClass('glyphicon-ok');
+  }
+  else  { 
+    var dataString = 'captcha=' + captcha;
+    $.ajax({
+      type: "POST",
+      url: "/verify",
+      data: dataString,
+      success: function(result) {
+	    inputCaptcha = $("#text-captcha");
+        formGroupCaptcha = inputCaptcha.parents('.form-group');
+        glyphiconCaptcha = formGroupCaptcha.find('.form-control-feedback');
+
+        document.getElementById('inn').value = result;
+        if (result==="true") {
+          formGroupCaptcha.addClass('has-success').removeClass('has-error');
+          glyphiconCaptcha.addClass('glyphicon-ok').removeClass('glyphicon-remove');
+ 	      if (formValid) {
+            $('#myModal').modal('hide');
+            $('#success-alert').removeClass('hidden');
+            $('#success-alert').removeClass('hidden');
+          }         
+        } 
+		else {
+          formGroupCaptcha.addClass('has-error').removeClass('has-success');
+          glyphiconCaptcha.addClass('glyphicon-remove').removeClass('glyphicon-ok');
+        }
+	  }
+    });
+  }
+});
+});
+</script>
+</body>
+</html>
