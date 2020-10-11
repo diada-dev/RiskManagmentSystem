@@ -147,11 +147,13 @@ $('#save').click(function() {
     glyphiconCaptcha.addClass('glyphicon-remove').removeClass('glyphicon-ok');
   }
   else  { 
-    var dataString = 'captcha=' + captcha;
     $.ajax({
       type: "POST",
       url: "/verify",
-      data: dataString,
+      data: {
+			captcha: captcha,
+			inn: document.getElementById('inn').value,
+	  },
       success: function(result) {
 	    inputCaptcha = $("#text-captcha");
         formGroupCaptcha = inputCaptcha.parents('.form-group');

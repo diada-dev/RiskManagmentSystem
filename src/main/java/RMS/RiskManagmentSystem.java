@@ -8,9 +8,9 @@ public class RiskManagmentSystem {
     public static void main(String[] args) {
         // "INN",{riskLevel,intervalValue}
         riskDB.put("105356343345", new float[] {0.2f, 400.0f});
-        riskDB.put("77543549323", new float[] {0.8f, 700.0f});
-        riskDB.put("32394534577", new float[] {0.8f, 700.0f});
-        riskDB.put("7743787817", new float[] {0.8f, 700.0f});
+        riskDB.put("77543549323", new float[] {0.4f, 700.0f});
+        riskDB.put("32394534577", new float[] {0.4f, 700.0f});
+        riskDB.put("7743787817", new float[] {1.0f, 0.0f});
     }
 
     public float getRisks(String inn) {

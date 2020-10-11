@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import RMS.*;
 
-import servlets.getHash;
 
 public class VerifyServlet extends HttpServlet {
 
@@ -31,11 +31,14 @@ public class VerifyServlet extends HttpServlet {
 
             String val = session.getAttribute("CAPTCHA").toString();
 
-            if (message.equals(val)){
+            if (message.equals(val)) {
                 response.getWriter().print("true");
-                session.setAttribute("FirstTimeCaptcha", time);}
-            else
+                session.setAttribute("FirstTimeCaptcha", time);
+                String inn = request.getParameter("inn").toString();
+                session.setAttribute("INN", inn);
+            } else {
                 response.getWriter().print("false");
+            }
 
             return;
         }
@@ -51,13 +54,31 @@ public class VerifyServlet extends HttpServlet {
             }
 
             if (message1.equals(val)){
-                response.getWriter().print("true");
+
                 session.setAttribute("SecondTimeCaptcha", time);}
-            else
-                response.getWriter().print("false");
 
-        }
+                //проверка вычисления хэша прошла успешно - можно отправлять на антифрод
+                RiskManagmentSystem RMS = new RiskManagmentSystem();
+                SyslogServer serv = new SyslogServer();
 
+                String inn = session.getAttribute("INN").toString();
+                serv.info("Start transaction for " + inn);
+                float r = RMS.getRisks(inn);
+                if (r==1){
+                    //ablolute risk, start honey pot to wait attackers error
+                    usingHoneyPot hp = new usingHoneyPot();
+                    session.setAttribute("HoneyPot", hp);
+                    response.getWriter().print("false"); //вот тут вопрос - нужно ли держать атакующего на связи
+                    //или просто сказать ему не получилось не фартануло
+                } else {
+                   callAntifraud af = new callAntifraud();
+                   session.setAttribute("AntiFraud", af);
+                   response.getWriter().print("true");
+                }
+
+            } else {
+            response.getWriter().print("false");
+            }
 
     }
 }
