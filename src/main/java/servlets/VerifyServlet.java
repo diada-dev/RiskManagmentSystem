@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+
+import servlets.getHash;
 
 public class VerifyServlet extends HttpServlet {
 
@@ -19,22 +22,42 @@ public class VerifyServlet extends HttpServlet {
         final HttpSession session = request.getSession(false);
 
         String message = request.getParameter("captcha");
+        String message1 = request.getParameter("SHA256");
+
         response.setContentType("text/html;charset=utf-8");
 
-        if (message == null || message.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else {
+        if (!(message == null || message.isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
+
+            String val = session.getAttribute("CAPTCHA").toString();
+
+            if (message.equals(val)){
+                response.getWriter().print("true");
+                session.setAttribute("FirstTimeCaptcha", time);}
+            else
+                response.getWriter().print("false");
+
+            return;
         }
 
+        if (!(message1 == null || message1.isEmpty())) {
+            response.setStatus(HttpServletResponse.SC_OK);
 
-        String val = session.getAttribute("CAPTCHA").toString();
+            String val = null;
+            try {
+                val = getHash.toHexString(getHash.getSHA(session.getAttribute("CAPTCHA").toString()));
+            } catch (NoSuchAlgorithmException e) {
+                val = "";
+            }
 
-        if (message.equals(val)){
-            response.getWriter().print("true");
-            session.setAttribute("FirstTimeCaptcha", time);}
-        else
-            response.getWriter().print("false");
+            if (message1.equals(val)){
+                response.getWriter().print("true");
+                session.setAttribute("SecondTimeCaptcha", time);}
+            else
+                response.getWriter().print("false");
+
+        }
+
 
     }
 }
