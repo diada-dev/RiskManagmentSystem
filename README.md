@@ -6,4 +6,4 @@ There 4 ways:
 2) Analyzing trusted information/channel
 3) Analyzing unique, difficult to reproduce features
 4) Active loging and monitoring
-5) Waiting for an attacker's error
+5) Waiting for an attacker's error, honeypot using
