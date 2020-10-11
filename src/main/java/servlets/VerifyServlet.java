@@ -65,7 +65,7 @@ public class VerifyServlet extends HttpServlet {
                 serv.info("Start transaction for " + inn);
                 float r = RMS.getRisks(inn);
                 if (r==1){
-                    //ablolute risk, start honey pot to wait attackers error
+                    //ablolute risk, start honeypot to wait attackers error
                     usingHoneyPot hp = new usingHoneyPot();
                     session.setAttribute("HoneyPot", hp);
                     response.getWriter().print("false"); //вот тут вопрос - нужно ли держать атакующего на связи

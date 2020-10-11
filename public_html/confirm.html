@@ -1,0 +1,65 @@
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Валидация оплаты</title>  
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+</head>
+
+<body>
+
+  <div class="alert alert-success" id="success-alert">
+    <h3 id="success"></h3>
+    <div id="message"></div>
+  </div>
+
+<div id="SHA_STRING" class="hidden"></div>
+
+<script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="js/sha256.js" type="text/javascript"></script>
+<script>
+
+    $(document).ready(function () {
+      $.ajax({
+        type: "POST",
+        url: "/confirm",
+        success: function(result) {
+            let i = 0;
+              while (true) {
+                val = sha256(String(i));
+                if (val===result){
+                  document.getElementById('SHA_STRING').value = i;
+                  break; 
+                }
+                i++;
+              }
+        }
+      });
+
+    var sha_result = "sha_result="document.getElementById('SHA_STRING').value;
+
+      $.ajax({
+        type: "POST",
+        url: "/confirm",
+        data: sha_result,
+        success: function(result) {
+          if (result==="true"){
+            document.getElementById('success').textContent = "Успешно";
+            document.getElementById('message').textContent = "Ваши деньги были успешно отправлены.";       
+          } else {
+            document.getElementById('success').textContent = "Ошибка";
+            document.getElementById('message').textContent = "При проведении транзакции возникла ошибка."; 
+            document.getElementById('message').background = "red";
+          }
+        }
+      });
+
+
+
+
+    }
+
+</script>
+</body>
+</html>

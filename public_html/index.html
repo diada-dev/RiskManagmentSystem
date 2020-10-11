@@ -6,10 +6,8 @@
   <title>Валидация оплаты</title>  
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 </head>
+
 <body>
-
-
-
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -176,13 +174,7 @@ $('#save').click(function() {
       			data: dataString,
       			success: function(result){
       				if (result==="true"){
-           				formGroupCaptcha.addClass('has-success').removeClass('has-error');
-          				glyphiconCaptcha.addClass('glyphicon-ok').removeClass('glyphicon-remove');
- 	      				if (formValid) {
-            				$('#myModal').modal('hide');
-            				$('#success-alert').removeClass('hidden');
-            				$('#success-alert').removeClass('hidden');     				
-      					}
+           				document.location.href = "/confirm.html";
       				}
       			}
     });

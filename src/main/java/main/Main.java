@@ -5,10 +5,8 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import servlets.PayFormServlet;
-//import servlets.CaptchaServlet;
-import servlets.VerifyServlet;
-import servlets.CAPTCHAText;
+import servlets.*;
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -27,6 +25,9 @@ public class Main {
 
         CAPTCHAText requestCaptchaServlet = new CAPTCHAText();
         context.addServlet(new ServletHolder(requestCaptchaServlet), "/text-c");
+
+        confirmServlets requestConfirm = new confirmServlets();
+        context.addServlet(new ServletHolder(requestConfirm), "/confirm");
         //******************************************************************************
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");
